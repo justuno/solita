@@ -23,9 +23,9 @@ class InstructionRenderer {
             return `${arg.name}: ${typescriptType}`;
         };
         this.upperCamelIxName = ix.name
-          .charAt(0)
-          .toUpperCase()
-          .concat(ix.name.slice(1));
+            .charAt(0)
+            .toUpperCase()
+            .concat(ix.name.slice(1));
         this.camelIxName = ix.name.charAt(0).toLowerCase().concat(ix.name.slice(1));
         this.argsTypename = `${this.upperCamelIxName}InstructionArgs`;
         this.accountsTypename = `${this.upperCamelIxName}InstructionAccounts`;
@@ -39,8 +39,8 @@ class InstructionRenderer {
         if (this.ix.args.length === 0)
             return '';
         const fields = this.ix.args
-          .map((field) => this.renderIxArgField(field))
-          .join(',\n  ');
+            .map((field) => this.renderIxArgField(field))
+            .join(',\n  ');
         const code = `
 /**
  * @category Instructions
@@ -59,8 +59,8 @@ export type ${this.argsTypename} = {
         const typeMapperImports = this.typeMapper.importsUsed(this.fullFileDir.toString(), new Set([types_1.SOLANA_WEB3_PACKAGE, beet_1.BEET_PACKAGE]));
         const needsSplToken = processedKeys.some((x) => { var _a; return ((_a = x.knownPubkey) === null || _a === void 0 ? void 0 : _a.pack) === types_1.SOLANA_SPL_TOKEN_PACKAGE; });
         const splToken = needsSplToken
-          ? `\nimport * as ${types_1.SOLANA_SPL_TOKEN_EXPORT_NAME} from '${types_1.SOLANA_SPL_TOKEN_PACKAGE}';`
-          : '';
+            ? `\nimport * as ${types_1.SOLANA_SPL_TOKEN_EXPORT_NAME} from '${types_1.SOLANA_SPL_TOKEN_PACKAGE}';`
+            : '';
         return `
 ${splToken}
 ${typeMapperImports.join('\n')}`.trim();
@@ -118,17 +118,17 @@ ${typeMapperImports.join('\n')}`.trim();
      */
     renderIxAccountKeys(processedKeys) {
         const fixedAccountKeys = this.defaultOptionalAccounts
-          ? this.renderAccountKeysDefaultingOptionals(processedKeys)
-          : this.renderAccountKeysNotDefaultingOptionals(processedKeys);
+            ? this.renderAccountKeysDefaultingOptionals(processedKeys)
+            : this.renderAccountKeysNotDefaultingOptionals(processedKeys);
         const anchorRemainingAccounts = this.renderAnchorRemainingAccounts && processedKeys.length > 0
-          ? `
+            ? `
   if (accounts.anchorRemainingAccounts != null) {
     for (const acc of accounts.anchorRemainingAccounts) {
       keys.push(acc)
     }
   }
 `
-          : '';
+            : '';
         return `${fixedAccountKeys}\n${anchorRemainingAccounts}\n`;
     }
     // -----------------
@@ -145,8 +145,8 @@ ${typeMapperImports.join('\n')}`.trim();
     }
     renderAccountKeysInsideArray(processedKeys) {
         const metaElements = processedKeys
-          .map((processedKey) => renderRequiredAccountMeta(processedKey, this.programIdPubkey))
-          .join(',\n    ');
+            .map((processedKey) => renderRequiredAccountMeta(processedKey, this.programIdPubkey))
+            .join(',\n    ');
         return `[\n    ${metaElements}\n  ]`;
     }
     renderAccountKeysToPush(processedKeys) {
@@ -154,35 +154,35 @@ ${typeMapperImports.join('\n')}`.trim();
             return '';
         }
         const statements = processedKeys
-          .map((processedKey, idx) => {
-              if (!processedKey.optional) {
-                  const accountMeta = renderRequiredAccountMeta(processedKey, this.programIdPubkey);
-                  return `keys.push(${accountMeta})`;
-              }
-              const requiredOptionals = processedKeys
+            .map((processedKey, idx) => {
+            if (!processedKey.optional) {
+                const accountMeta = renderRequiredAccountMeta(processedKey, this.programIdPubkey);
+                return `keys.push(${accountMeta})`;
+            }
+            const requiredOptionals = processedKeys
                 .slice(0, idx)
                 .filter((x) => x.optional);
-              const requiredChecks = requiredOptionals
+            const requiredChecks = requiredOptionals
                 .map((x) => `accounts.${x.name} == null`)
                 .join(' || ');
-              const checkRequireds = requiredChecks.length > 0
+            const checkRequireds = requiredChecks.length > 0
                 ? `if (${requiredChecks}) { throw new Error('When providing \\'${processedKey.name}\\' then ` +
-                `${requiredOptionals
-                  .map((x) => `\\'accounts.${x.name}\\'`)
-                  .join(', ')} need(s) to be provided as well.') }`
+                    `${requiredOptionals
+                        .map((x) => `\\'accounts.${x.name}\\'`)
+                        .join(', ')} need(s) to be provided as well.') }`
                 : '';
-              const pubkey = `accounts.${processedKey.name}`;
-              const accountMeta = renderAccountMeta(pubkey, processedKey.isMut.toString(), processedKey.isSigner.toString());
-              // renderRequiredAccountMeta
-              // NOTE: we purposely don't add the default resolution here since the intent is to
-              // only pass that account when it is provided
-              return `
+            const pubkey = `accounts.${processedKey.name}`;
+            const accountMeta = renderAccountMeta(pubkey, processedKey.isMut.toString(), processedKey.isSigner.toString());
+            // renderRequiredAccountMeta
+            // NOTE: we purposely don't add the default resolution here since the intent is to
+            // only pass that account when it is provided
+            return `
 if (accounts.${processedKey.name} != null) {
   ${checkRequireds}
   keys.push(${accountMeta})
 }`.trim();
-          })
-          .join('\n');
+        })
+            .join('\n');
         return `\n${statements}\n`;
     }
     // -----------------
@@ -197,12 +197,12 @@ if (accounts.${processedKey.name} != null) {
      */
     renderAccountKeysDefaultingOptionals(processedKeys) {
         const metaElements = processedKeys
-          .map((processedKey) => {
-              return processedKey.optional
+            .map((processedKey) => {
+            return processedKey.optional
                 ? renderOptionalAccountMetaDefaultingToProgramId(processedKey)
                 : renderRequiredAccountMeta(processedKey, this.programIdPubkey);
-          })
-          .join(',\n    ');
+        })
+            .join(',\n    ');
         return `[\n    ${metaElements}\n  ]`;
     }
     // -----------------
@@ -213,33 +213,33 @@ if (accounts.${processedKey.name} != null) {
             return '';
         const web3 = types_1.SOLANA_WEB3_EXPORT_NAME;
         const fields = processedKeys
-          .map((x) => {
-              if (x.knownPubkey != null) {
-                  return `${x.name}?: ${web3}.PublicKey`;
-              }
-              const optional = x.optional ? '?' : '';
-              return `${x.name}${optional}: ${web3}.PublicKey`;
-          })
-          .join('\n  ');
+            .map((x) => {
+            if (x.knownPubkey != null) {
+                return `${x.name}?: ${web3}.PublicKey`;
+            }
+            const optional = x.optional ? '?' : '';
+            return `${x.name}${optional}: ${web3}.PublicKey`;
+        })
+            .join('\n  ');
         const anchorRemainingAccounts = this.renderAnchorRemainingAccounts
-          ? 'anchorRemainingAccounts?: web3.AccountMeta[]'
-          : '';
+            ? 'anchorRemainingAccounts?: web3.AccountMeta[]'
+            : '';
         const propertyComments = processedKeys
-          // known pubkeys are not provided by the user and thus aren't part of the type
-          .filter((x) => !(0, known_pubkeys_1.isKnownPubkey)(x.name))
-          .map((x) => {
-              const attrs = [];
-              if (x.isMut)
-                  attrs.push('_writable_');
-              if (x.isSigner)
-                  attrs.push('**signer**');
-              const optional = x.optional ? ' (optional) ' : ' ';
-              const desc = (0, types_1.isIdlInstructionAccountWithDesc)(x) ? x.desc : '';
-              return (`* @property [${attrs.join(', ')}] ` + `${x.name}${optional}${desc} `);
-          });
+            // known pubkeys are not provided by the user and thus aren't part of the type
+            .filter((x) => !(0, known_pubkeys_1.isKnownPubkey)(x.name))
+            .map((x) => {
+            const attrs = [];
+            if (x.isMut)
+                attrs.push('_writable_');
+            if (x.isSigner)
+                attrs.push('**signer**');
+            const optional = x.optional ? ' (optional) ' : ' ';
+            const desc = (0, types_1.isIdlInstructionAccountWithDesc)(x) ? x.desc : '';
+            return (`* @property [${attrs.join(', ')}] ` + `${x.name}${optional}${desc} `);
+        });
         const properties = propertyComments.length > 0
-          ? `\n *\n  ${propertyComments.join('\n')} `
-          : '';
+            ? `\n *\n  ${propertyComments.join('\n')} `
+            : '';
         const docs = `
 /**
   * Accounts required by the _${this.ix.name}_ instruction${properties}
@@ -307,13 +307,13 @@ ${struct} `.trim();
         const web3 = types_1.SOLANA_WEB3_EXPORT_NAME;
         const imports = this.renderImports(processedKeys);
         const [createInstructionArgsComment, createInstructionArgs, createInstructionArgsSpread, comma,] = this.ix.args.length === 0
-          ? ['', '', '', '']
-          : [
-              `\n * @param args to provide as instruction data to the program\n * `,
-              `args: ${this.argsTypename} `,
-              '...args',
-              ', ',
-          ];
+            ? ['', '', '', '']
+            : [
+                `\n * @param args to provide as instruction data to the program\n * `,
+                `args: ${this.argsTypename} `,
+                '...args',
+                ', ',
+            ];
         const programIdArg = `${comma}programId = ${this.programIdPubkey}`;
         const optionalAccountsComment = optionalAccountsStrategyDocComment(this.defaultOptionalAccounts, processedKeys.some((x) => x.optional));
         return `${imports}
@@ -381,9 +381,9 @@ function renderAccountMeta(pubkey, isWritable, isSigner) {
 }
 function deriveCollectionAccountsName(accountName, collectionName) {
     const camelAccount = accountName
-      .charAt(0)
-      .toUpperCase()
-      .concat(accountName.slice(1));
+        .charAt(0)
+        .toUpperCase()
+        .concat(accountName.slice(1));
     return `${collectionName}Item${camelAccount}`;
 }
 function renderOptionalAccountMetaDefaultingToProgramId(processedKey) {
@@ -396,8 +396,8 @@ function renderOptionalAccountMetaDefaultingToProgramId(processedKey) {
 function renderRequiredAccountMeta(processedKey, programIdPubkey) {
     const { name, isMut, isSigner, knownPubkey } = processedKey;
     const pubkey = knownPubkey == null
-      ? `accounts.${name}`
-      : `accounts.${name} ?? ${(0, known_pubkeys_1.renderKnownPubkeyAccess)(knownPubkey, programIdPubkey)}`;
+        ? `accounts.${name}`
+        : `accounts.${name} ?? ${(0, known_pubkeys_1.renderKnownPubkeyAccess)(knownPubkey, programIdPubkey)}`;
     return renderAccountMeta(pubkey, isMut.toString(), isSigner.toString());
 }
 function optionalAccountsStrategyDocComment(defaultOptionalAccounts, someAccountIsOptional) {
