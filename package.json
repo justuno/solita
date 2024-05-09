@@ -25,7 +25,8 @@
     "lint:fix": "prettier --write ./src",
     "doc": "rimraf ./docs && typedoc",
     "doc:update": "./sh/update-docs",
-    "doctoc": "doctoc README.md"
+    "doctoc": "doctoc README.md",
+    "postinstall": "npm run build"
   },
   "repository": "git@github.com:metaplex-foundation/solita.git",
   "author": "Thorsten Lorenz <thlorenz@gmx.de>",
