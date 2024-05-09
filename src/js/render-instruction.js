@@ -346,20 +346,6 @@ ${accountsType}
   });
   return ix; 
 }
-
-/**
-     * Creates a _${this.upperCamelIxName}_ instructionAccounts.
-    ${optionalAccountsComment}${accountsParamDoc}
-     * @category Instructions
-     * @category ${this.upperCamelIxName}
-     * @category generated
-     */
-    export function create${this.upperCamelIxName}InstructionAccounts(
-      ${accountsArg}${programIdArg}
-    ) {
-    const keys: ${web3}.AccountMeta[] = ${keys}
-  return keys; 
-}
 `;
     }
 }
